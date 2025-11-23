@@ -6,7 +6,15 @@ import { EmployeUsers } from "@/app/api/Employe";
 import type { Employee } from "@/types/Employe";
 import { useAccount, useConnect, useWriteContract } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { createPublicClient, erc20Abi, http } from "viem";
+import {
+  createPublicClient,
+  erc20Abi,
+  http,
+  decodeEventLog,
+  getEventSelector,
+} from "viem";
+import { waitForTransactionReceipt } from "viem/actions";
+
 import { eduChainTestnet } from "@/app/utils/chains";
 import { abiTokenPhii } from "@/abi/abiTokenPhii";
 import { getWalletByUserId } from "../api/Wallet";
@@ -127,13 +135,36 @@ export const useEmployee = (id: string | number) => {
         args: [address, recipient, ratePerSecond, token, true, amount],
       });
 
-      // Menunggu transaksi selesai
-      const streamId = createTx.events?.find(
-        (event: any) => event.event === "StreamCreated"
-      )?.args?.streamId;
+      const tx = await waitForTransactionReceipt(publicClient, {
+        hash: createTx,
+      });
 
-      setStreamId(streamId); // Menyimpan streamId ke state
-      console.log("Stream ID:", streamId);
+      const log = tx.logs.find(
+        (l) => l.topics[0] === getEventSelector("StreamCreated(uint256)")
+      );
+
+      const event = decodeEventLog({
+        abi: abiTokenPhii,
+        data: log.data,
+        topics: log.topics,
+      });
+
+      if (!event.args) {
+        console.error("No args in event log");
+        return;
+      }
+
+      let streamId: bigint;
+
+      // Jika args berupa array → ambil index 0
+      if (Array.isArray(event.args)) {
+        streamId = event.args[0] as bigint;
+      } else {
+        // Jika args berupa object → ambil key streamId
+        streamId = (event.args as any).streamId as bigint;
+      }
+
+      console.log("streamId:", streamId);
 
       if (createTx) {
         const status_cleam = "Nocleam";
