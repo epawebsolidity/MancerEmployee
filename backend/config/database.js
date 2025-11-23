@@ -11,11 +11,10 @@ const db = mysql.createPool({
   connectionLimit: 10
 });
 
-// Cek koneksi
 try {
-  console.log("✅ Connected to MySQL Database");
+  console.log("Connected to MySQL Database");
 } catch (err) {
-  console.error("❌ Database connection failed:", err.message);
+  console.error("Database connection failed:", err.message);
 }
 
 export default db;

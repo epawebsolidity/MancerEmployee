@@ -1,84 +1,48 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import Cookies from "js-cookie";
-import api from "../utils/axiosAuth";
+"use client";
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-};
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuthWallet } from "@/app/api/AuthWallet";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+export function useLogin() {
+  const router = useRouter();
+  const { loginWithClearWallet } = useAuthWallet();
 
-export const AuthLoginMancer = async (email: string, password: string) => {
-  try {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const user = userCredential.user;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-    const token = await user.getIdToken();
+  const login = async (email: string, password: string) => {
+    setLoading(true);
+    setError("");
 
-    Cookies.set("authCookies", token, {
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      expires: 1,
-    });
+    try {
+     
+      const { user, error: loginError } = await loginWithClearWallet(
+        email,
+        password
+      );
 
-    return { user, error: null };
-  } catch (err: unknown) {
-    if (err instanceof Error) return { user: null, error: err.message };
-    return { user: null, error: "Unknown error" };
-  }
-};
+      setLoading(false); 
 
-export const loginBackend = async (email: string, password: string) => {
-  try {
-    const response = await api.post("/auth", { email, password });
+      if (loginError) {
+        setError(loginError);
+        return;
+      }
 
-    Cookies.set("accessToken", response.data?.accessToken, {
-      path: "/",
-      expires: 1,
-    });
+      
+      if (user?.role === "Admin") {
+        router.push("/features/admin/home");
+      } else if (user?.role === "Users") {
+        router.push("/features/users/home");
+      } else {
+        router.push("/");
+      }
+    } catch (err) {
+      console.error("Error login:", err);
+      setError("Something went wrong");
+      setLoading(false);
+    }
+  };
 
-    return response.data;
-  } catch (err: unknown) {
-    if (err instanceof Error) return { user: null, error: err.message };
-    return { user: null, error: "Unknown error" };
-  }
-};
-
-export const loginMancer = async (email: string, password: string) => {
-  const backendResult = await loginBackend(email, password);
-  if (backendResult.error) return backendResult;
-
-  const firebaseResult = await AuthLoginMancer(email, password);
-  if (firebaseResult.error) return firebaseResult;
-
-  return { user: backendResult.user, error: null };
-};
-
-export const checkUsers = async () => {
-  try {
-    const response = await api.get("/auth/checkUsers");
-    return response.data;
-  } catch (err: unknown) {
-    if (err instanceof Error) return { user: null, error: err.message };
-    return { user: null, error: "Unknown error" };
-  }
-};
-
-export const UsersLogout = async () => {
-  try {
-    const response = await api.post("/auth/logout");
-    return response.data;
-  } catch (err: unknown) {
-    if (err instanceof Error) return { user: null, error: err.message };
-    return { user: null, error: "Unknown error" };
-  }
-};
+  return { login, loading, error, setError };
+}

@@ -1,13 +1,13 @@
 "use client";
 
 import { useDisconnect } from "wagmi";
-import { loginMancer, UsersLogout } from "./useLogin";
+import { loginMancer, UsersLogout } from "./Login";
 
 export function useAuthWallet() {
   const { disconnect } = useDisconnect();
 
   const loginWithClearWallet = async (email: string, password: string) => {
-    await disconnect(); // pastikan wallet user sebelumnya terlepas
+    await disconnect();
     return await loginMancer(email, password);
   };
 

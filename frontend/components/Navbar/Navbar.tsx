@@ -1,6 +1,6 @@
 "use client";
 
-import { UsersLogout } from "@/app/hooks/useLogin";
+import { UsersLogout } from "@/app/api/Login";
 import { clearAllClientCookies } from "@/app/utils/cookies";
 import ButtonConnectWallet from "@/components/ConnectWallet/ButtonConnectWallet";
 import logo from "@/public/assets/images/logo-mancer.png";
@@ -10,7 +10,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Navbar({ isOpen, setIsOpen, navItems }: NavbarProps) {
-
   const router = useRouter();
   const handleLogout = async () => {
     await UsersLogout();
@@ -21,8 +20,6 @@ export default function Navbar({ isOpen, setIsOpen, navItems }: NavbarProps) {
   return (
     <div className="relative">
       <nav className="fixed top-0 left-0 z-50 w-full bg-[#f9140D] text-white">
-
-        {/* Navbar Desktop Mancer */}
         <div className="mx-auto max-w-5xl flex items-center justify-between px-[10px] py-4 sm:px-[10px] relative">
           <button
             className="sm:hidden w-10 h-10 flex items-center justify-center text-white text-3xl"
@@ -57,7 +54,6 @@ export default function Navbar({ isOpen, setIsOpen, navItems }: NavbarProps) {
           </div>
         </div>
 
-        {/* Navbar Mobile Mancer */}
         {isOpen && (
           <div
             className="sm:hidden flex flex-col gap-3 px-4 py-5 

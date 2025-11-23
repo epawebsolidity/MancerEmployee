@@ -1,47 +1,22 @@
 "use client";
 
-import { useAuthWallet } from "@/app/hooks/useAuthWallet";
-import logo from "@/public/assets/images/logo-mancer.png";
-import { Poppins } from "next/font/google";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { Poppins } from "next/font/google";
+import logo from "@/public/assets/images/logo-mancer.png";
 import { useState } from "react";
+import { useLogin } from "@/app/hooks/useLogin";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "600", "700"] });
 
-export default function LoginPage() {
+export default function LoginForm() {
+  const { login, loading, error, setError } = useLogin();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const router = useRouter();
-
-  const { loginWithClearWallet } = useAuthWallet();
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      const { user, error: loginError } = await loginWithClearWallet(email, password);
-      setLoading(false);
-      console.log("User setelah login:", user);
-      if (loginError) {
-        setError(loginError);
-      } else {
-        if (user?.role === "Admin") {
-          router.push("/features/admin/home");
-        } else if (user?.role === "Users") {
-          router.push("/features/users/home");
-        } else {
-          router.push("/");
-        }
-      }
-    } catch (err) {
-      console.error("Error login:", err);
-    }
+    login(email, password);
   };
 
   return (
@@ -57,7 +32,7 @@ export default function LoginPage() {
               className="rounded-full filter brightness-0 invert"
             />
             <h1
-              className={`${poppins.className} text-white text-xl font-bold mt-8 text-left w-full`}
+              className={`${poppins.className} text-white text-xl font-bold mt-8 w-full`}
             >
               Welcome to Mancer App
             </h1>
@@ -80,22 +55,34 @@ export default function LoginPage() {
                 placeholder="Email"
                 className="border border-gray-600 w-full p-3 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none text-sm sm:text-base"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setError("");
+                }}
               />
               <input
                 type="password"
                 placeholder="Password"
                 className="border border-gray-600 w-full p-3 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none text-sm sm:text-base"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError("");
+                }}
               />
+
               <button
                 type="submit"
-                disabled={loading}
-                className="bg-red-600 text-white font-semibold w-full py-3 rounded-full hover:opacity-90 transition text-sm sm:text-base"
+                disabled={loading} // Disable button while loading
+                className="bg-red-600 text-white font-semibold w-full py-3 rounded-full hover:opacity-90 transition text-sm sm:text-base flex items-center justify-center"
               >
-                {loading ? "Logging in..." : "Login"}
+                {loading ? (
+                  <div className="w-5 h-5 border-4 border-t-white border-gray-300 rounded-full animate-spin"></div>
+                ) : (
+                  "Login"
+                )}
               </button>
+
               {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
             </form>
           </div>

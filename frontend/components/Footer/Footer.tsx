@@ -10,7 +10,6 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Social Media */}
         <div className="flex space-x-6">
           <a
             href="https://facebook.com"
