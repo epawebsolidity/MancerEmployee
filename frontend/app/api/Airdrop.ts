@@ -3,6 +3,7 @@ import api from "../utils/axios";
 export const createAllowcationAirdrop = async (
   id_employe: number,
   salary: string,
+<<<<<<< HEAD
   status_cleam: string
 ) => {
   try {
@@ -13,6 +14,21 @@ export const createAllowcationAirdrop = async (
       status_cleam,
     });
     console.log("result", res.data);
+=======
+  month: string,
+  hash: string, 
+  streamId: string
+) => {
+  try {
+    const res = await api.post("/airdrop", {
+      id_employe,
+      salary,
+      month, 
+      hash, 
+      streamId
+    });
+    console.log("result", res);
+>>>>>>> fa65e95 (first commit)
     return res.data;
   } catch (error) {
     console.error("Error creating wallet:", error);
@@ -23,7 +39,11 @@ export const createAllowcationAirdrop = async (
 export const getAllowcationAirdrop = async (id_employe: number) => {
   try {
     const res = await api.get(`/airdrop/${id_employe}`);
+<<<<<<< HEAD
     console.log(res.data.data);
+=======
+    console.log(res);
+>>>>>>> fa65e95 (first commit)
     return res.data.data;
   } catch (error) {
     console.error("Error fetching wallet data:", error);

@@ -37,6 +37,7 @@ export const claimAllowcationEmploye = async (req, res) => {
 
 
 export const createAllowcationEmploye = async (req, res) => {
+<<<<<<< HEAD
   const { id_employe, salary, status_cleam } = req.body;
 
   try {
@@ -51,11 +52,21 @@ export const createAllowcationEmploye = async (req, res) => {
         [id_employe, salary, status_cleam]
       );
 
+=======
+  const { id_employe, salary, status_cleam, hash, streamId } = req.body;
+
+  try {
+      const [rows] = await db.query(
+        "INSERT INTO emp_salary (id_employe, salary, status_cleam, hash, streamId) VALUES (?, ?, ?, ?, ?)",
+        [id_employe, salary, status_cleam, hash, streamId]
+      );
+>>>>>>> fa65e95 (first commit)
       return res.status(200).json({
         success: true,
         message: "Airdrop allocation created",
         data: rows,
       });
+<<<<<<< HEAD
     }
     const newSalary = Number(current.salary) + Number(salary);
 
@@ -77,6 +88,9 @@ export const createAllowcationEmploye = async (req, res) => {
     });
 
   } catch (error) {
+=======
+    } catch (error) {
+>>>>>>> fa65e95 (first commit)
     console.error("Error creating airdrop:", error);
     return res.status(500).json({ message: "Error creating airdrop" });
   }
@@ -87,7 +101,11 @@ export const getAllowcationEmploye = async (req, res) => {
     const {id_employe} = req.params;
     try {
         const [rows] = await db.query(`SELECT * FROM emp_salary WHERE id_employe = ?`, [id_employe]);
+<<<<<<< HEAD
        const filtered = rows.filter(item => item.status_cleam !== "Claimed");
+=======
+       const filtered = rows.filter(item => item.month === "November");
+>>>>>>> fa65e95 (first commit)
 
 res.status(200).json({
   success: true,
@@ -96,4 +114,39 @@ res.status(200).json({
     } catch (error) {
         res.status(500).json({ message: "Error fetching wallet data" });
     }
+<<<<<<< HEAD
 }
+=======
+}
+
+
+// export const getAllowcationEmploye = async (req, res) => {
+//   const { id_employe } = req.params;
+
+//   try {
+//     // Ambil data semua salary employee dari DB
+//     const [rows] = await pool.query(
+//       "SELECT * FROM emp_salary WHERE id_employe = ?",
+//       [id_employe]
+//     );
+
+//     const now = new Date();
+//     const monthNames = [
+//       "January","February","March","April","May","June",
+//       "July","August","September","October","November","December"
+//     ];
+//     const currentMonthName = monthNames[now.getMonth()]; // ex: "November"
+
+//     // Filter data bulan ini
+//     const filtered = rows.filter(item => item.month === currentMonthName);
+
+//     res.status(200).json({
+//       success: true,
+//       data: filtered,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Error fetching wallet data" });
+//   }
+// };
+>>>>>>> fa65e95 (first commit)

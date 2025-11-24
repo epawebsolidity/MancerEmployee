@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< HEAD
 import { parseUnits } from "ethers";
 import { useState, useEffect } from "react";
 import { EmployeUsers } from "@/app/api/Employe";
@@ -19,6 +20,26 @@ import { eduChainTestnet } from "@/app/utils/chains";
 import { abiTokenPhii } from "@/abi/abiTokenPhii";
 import { getWalletByUserId } from "../api/Wallet";
 import { createAllowcationAirdrop } from "../api/Airdrop";
+=======
+import { EmployeUsers } from "@/app/api/Employe";
+import type { Employee } from "@/types/Employe";
+import { parseUnits } from "ethers";
+import { useEffect, useState } from "react";
+import {
+  createPublicClient,
+  decodeEventLog,
+  erc20Abi,
+  http
+} from "viem";
+import { waitForTransactionReceipt } from "viem/actions";
+import { useAccount, useConnect, useWriteContract } from "wagmi";
+import { injected } from "wagmi/connectors";
+
+import { abiTokenPhii } from "@/abi/abiTokenPhii";
+import { eduChainTestnet } from "@/app/utils/chains";
+import { createAllowcationAirdrop } from "../api/Airdrop";
+import { getWalletByUserId } from "../api/Wallet";
+>>>>>>> fa65e95 (first commit)
 
 export const useEmployees = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -139,6 +160,7 @@ export const useEmployee = (id: string | number) => {
         hash: createTx,
       });
 
+<<<<<<< HEAD
       const log = tx.logs.find(
         (l) => l.topics[0] === getEventSelector("StreamCreated(uint256)")
       );
@@ -176,6 +198,44 @@ export const useEmployee = (id: string | number) => {
         console.log(createDatabase);
       }
 
+=======
+      console.log("tx:", tx);
+
+      let streamId;
+
+      for (const log of tx.logs) {
+        try {
+          const decoded = decodeEventLog({
+            abi: abiTokenPhii,
+            data: log.data,
+            topics: log.topics,
+          });
+
+          console.log(decoded,"ini decoded");
+
+          if (decoded.eventName === "DepositFlowStream") {
+            streamId = decoded.args.streamId;
+            break;
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+
+      console.log("streamId:", streamId?.toString());
+      const month = "November";
+      const hash = createTx;
+      const streamIdFromTx = streamId;
+      const streamIdString = streamIdFromTx?.toString();
+      const createDatabase = createAllowcationAirdrop(
+        employee.id_users,
+        salary,
+        month, 
+        hash, 
+        streamIdString
+      );
+      console.log(createDatabase, "simpan ke database");
+>>>>>>> fa65e95 (first commit)
       setIsSuccess(true);
       setIsError(true);
       console.log("Reward sent successfully!");
