@@ -11,7 +11,8 @@ import {
 } from "viem";
 import { useAccount, useConnect, useWriteContract } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { createAllowcationAirdrop, getAllowcationAirdrop } from "../api/Salary";
+import { getAllowcationAirdrop } from "../api/Salary";
+import { getWalletByUserId } from "../api/Wallet";
 export const useRefund = (id: string | number) => {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [streamIdUsers, setStreamIdUsers] = useState<string>("");
@@ -79,62 +80,36 @@ export const useRefund = (id: string | number) => {
 }, [employee]);
 
 
-   const handleSendReefund = async () => {
+  const handleSendReefund = async () => {
     if (!address) {
       await connect();
       return;
     }
 
-    if (!employee) return;
+    if (!salary || !employee) return;
 
     try {
-      // Check wallet balance to make sure can pay gas
-      const nativeBalance = await publicClient.getBalance({ address });
-      if (nativeBalance === 0n) {
-        console.error("Wallet native balance kosong → tidak bisa bayar gas");
-        alert("Your wallet does not have enough native fees");
+      const res = await getWalletByUserId(Number(employee.id_users));
+      if (!res?.address_wallet) {
+        console.log("Wallet employee belum tersedia!");
         return;
       }
-
-      // Convert to BigInt if still string
-      const streamIdBig = BigInt(streamIdUsers);
-
-      console.log("Calling refundMax with:", {
-        sender: address,
-        streamId: streamIdBig.toString(),
-      });
-
-      const refundTx = await writeContractAsync({
-        account: address,
+      const wRufund = await writeContractAsync({
         address: streamContract,
         abi: abiTokenPhii,
         functionName: "refundMax",
-        args: [streamIdBig],
+        args: [BigInt(streamIdUsers)],
       });
 
-      console.log("Refund TX Hash:", refundTx);
-
-      // Save to database
-      const month = new Date().toLocaleString("en-US", { month: "long" });
-
-      const createDatabase = await createAllowcationAirdrop(
-        employee.id_employe,
-        "0",               // refund doesn't need salary input
-        month,            // month
-        refundTx,         // tx hash
-        "refundMax",      // type
-        streamIdBig.toString()
-      );
-
-      console.log("Saved DB: ", createDatabase);
-
+      console.log(wRufund, "Rufund Log");
       setIsSuccess(true);
-    } catch (err: any) {
-      console.error("Refund failed →", err?.cause || err);
+      setIsError(true);
+      console.log("Reward sent successfully!");
+    } catch (err) {
       setIsSuccess(false);
       setIsError(true);
+      console.error("Failed to send reward:", err);
     }
-
     setIsModalOpen(true);
   };
   return {
