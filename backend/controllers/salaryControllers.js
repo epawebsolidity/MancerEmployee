@@ -37,11 +37,11 @@ export const claimAllowcationEmploye = async (req, res) => {
 
 
 export const createAllowcationEmploye = async (req, res) => {    
-  const { id_employe, salary, month, hash, streamId } = req.body;
+  const { id_employe, salary, month, type, hash, streamId } = req.body;
   try {
       const [rows] = await db.query(
-        "INSERT INTO emp_salary (id_employe, salary, month, hash, streamId) VALUES (?, ?, ?, ?, ?)",
-        [id_employe, salary, month, hash, streamId]
+        "INSERT INTO emp_salary (id_employe, salary, month, type, hash, streamId) VALUES (?, ?, ?, ?, ?, ?)",
+        [id_employe, salary, month, type, hash, streamId]
       );
       return res.status(200).json({
         success: true,

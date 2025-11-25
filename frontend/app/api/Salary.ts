@@ -5,6 +5,7 @@ export const createAllowcationAirdrop = async (
   id_employe: number,
   salary: string,
   month: string,
+  type: string,
   hash: string,
   streamId: string
 ) => {

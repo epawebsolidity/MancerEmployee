@@ -4,7 +4,6 @@ import { abiTokenPhii } from "@/abi/abiTokenPhii";
 import { EmployeUsers } from "@/app/api/Employe";
 import { eduChainTestnet } from "@/app/utils/chains";
 import type { Employee } from "@/types/Employe";
-import { parseUnits } from "ethers";
 import { useEffect, useState } from "react";
 import {
     createPublicClient,
@@ -12,8 +11,7 @@ import {
 } from "viem";
 import { useAccount, useConnect, useWriteContract } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { getAllowcationAirdrop } from "../api/Salary";
-import { getWalletByUserId } from "../api/Wallet";
+import { createAllowcationAirdrop, getAllowcationAirdrop } from "../api/Salary";
 export const useRefund = (id: string | number) => {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [streamIdUsers, setStreamIdUsers] = useState<string>("");
@@ -40,6 +38,7 @@ export const useRefund = (id: string | number) => {
       setLoading(true);
       try {
         const res = await EmployeUsers();
+        console.log(res);
         const emp = res.data.find((e: Employee) => e.id_employe === Number(id));
         setEmployee(emp || null);
       } catch (err) {
@@ -52,69 +51,90 @@ export const useRefund = (id: string | number) => {
     fetchEmployee();
   }, [id]);
 
-   useEffect(() => {
-    const fetchBalanceUsers = async () => {
-      setLoading(true);
-      try {
-        console.log("useEffect", employee?.id_employe);
-        const dateNow = new Date().toLocaleString("en-US", { month: "long" });
-        console.log(dateNow);
-        const res = await getAllowcationAirdrop(employee?.id_employe || 0);
-        if(res.month === dateNow && res.type === "createAndDeposite"){
-          setStreamIdUsers(res[0]?.sreamId);
-        }
-        return;
-      } catch (err) {
-        console.error("Failed to fetch employee:", err);
-      } finally {
-        setLoading(false);
+  useEffect(() => {
+  if (!employee) return; 
+
+  const fetchBalanceUsers = async () => {
+    setLoading(true);
+    try {
+      const dateNow = new Date().toLocaleString("en-US", { month: "long" });
+      console.log(dateNow);
+
+      const res = await getAllowcationAirdrop(employee.id_employe);
+
+      if (
+        res[0]?.month === dateNow &&
+        res[0]?.type === "createAndDeposite"
+      ) {
+        setStreamIdUsers(res[0]?.streamId);
       }
-    };
+    } catch (err) {
+      console.error("Failed to fetch employee:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchBalanceUsers();
-  }, []);
+  fetchBalanceUsers();
+}, [employee]);
 
-  const handleSendReefund = async () => {
+
+   const handleSendReefund = async () => {
     if (!address) {
       await connect();
       return;
     }
 
-    if (!salary || !employee) return;
+    if (!employee) return;
 
     try {
-      const res = await getWalletByUserId(Number(employee.id_users));
-      if (!res?.address_wallet) {
-        console.log("Wallet employee belum tersedia!");
+      // Check wallet balance to make sure can pay gas
+      const nativeBalance = await publicClient.getBalance({ address });
+      if (nativeBalance === 0n) {
+        console.error("Wallet native balance kosong → tidak bisa bayar gas");
+        alert("Your wallet does not have enough native fees");
         return;
       }
-      const recipient: `0x${string}` = res.address_wallet;
-      const amount = parseUnits(salary || "0", 18); // misal salary="10" → 10*10^18
-      const duration = BigInt(30 * 24 * 60 * 60); // 30 hari dalam detik
-      const ratePerSecond = amount / duration;
 
-      console.log("amount:", amount.toString());
-      console.log("ratePerSecond:", ratePerSecond.toString());
+      // Convert to BigInt if still string
+      const streamIdBig = BigInt(streamIdUsers);
 
-      console.log(amount);
+      console.log("Calling refundMax with:", {
+        sender: address,
+        streamId: streamIdBig.toString(),
+      });
 
-      const wRufund = await writeContractAsync({
+      const refundTx = await writeContractAsync({
         account: address,
         address: streamContract,
         abi: abiTokenPhii,
-        functionName: "createAndDeposit",
-        args: [address],
+        functionName: "refundMax",
+        args: [streamIdBig],
       });
 
-      console.log(wRufund, "Rufund Log");
+      console.log("Refund TX Hash:", refundTx);
+
+      // Save to database
+      const month = new Date().toLocaleString("en-US", { month: "long" });
+
+      const createDatabase = await createAllowcationAirdrop(
+        employee.id_employe,
+        "0",               // refund doesn't need salary input
+        month,            // month
+        refundTx,         // tx hash
+        "refundMax",      // type
+        streamIdBig.toString()
+      );
+
+      console.log("Saved DB: ", createDatabase);
+
       setIsSuccess(true);
-      setIsError(true);
-      console.log("Reward sent successfully!");
-    } catch (err) {
+    } catch (err: any) {
+      console.error("Refund failed →", err?.cause || err);
       setIsSuccess(false);
       setIsError(true);
-      console.error("Failed to send reward:", err);
     }
+
     setIsModalOpen(true);
   };
   return {

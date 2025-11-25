@@ -138,13 +138,15 @@ export const useDeposite = (id: string | number) => {
       console.log("streamId:", streamId?.toString());
       const month = "November";
       const hash = createTx;
+      const type = "createAndDeposit";
       const streamIdFromTx = streamId;
       const streamIdString = streamIdFromTx?.toString();
       const createDatabase = createAllowcationAirdrop(
-        employee.id_users,
+        employee.id_employe,
         salary,
         month, 
         hash, 
+        type,
         streamIdString
       );
       console.log(createDatabase, "simpan ke database");
