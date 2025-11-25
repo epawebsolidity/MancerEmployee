@@ -5,9 +5,6 @@ export default function Footer() {
         {/* Brand */}
         <div className="flex flex-col items-center md:items-start">
           <h2 className="text-2xl font-extrabold mb-2">Mancer App</h2>
-          <p className="text-sm max-w-xs text-center md:text-left exo-2-400">
-           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia neque ad, soluta deleniti nesciunt accusantium sequi ducimus culpa quidem ut doloremque sunt illum laboriosam quasi facere tenetur. Labore, est in.
-          </p>
         </div>
 
         <div className="flex space-x-6">

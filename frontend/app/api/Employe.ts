@@ -19,3 +19,13 @@ export const EmployeUsersById = async (id_users: number) => {
     return { data: null, error: "Unknown error" };
   }
 };
+
+export const EmployeJoinSalary = async () => { 
+  try {
+    const res = await api.get("/employe/join/");
+    console.log(res);
+    return res.data;
+  } catch(err) {
+    console.log(err);
+  }
+}

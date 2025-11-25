@@ -2,9 +2,9 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import airdopRouter from "./router/AirdropRouter.js";
 import authRouter from "./router/AuthRouter.js";
 import employeeRouter from "./router/employeeRouter.js";
+import salaryRouter from "./router/SalaryRouter.js";
 import walletRouter from "./router/walletRouter.js";
 dotenv.config();
 const app = express();
@@ -26,7 +26,7 @@ app.use("/api/v1/employee", employeeRouter);
 
 app.use("/api/v1/wallet", walletRouter);
 
-app.use("/api/v1/airdrop", airdopRouter);
+app.use("/api/v1/salary", salaryRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`🚀 Server running at http://localhost:${process.env.PORT}`);

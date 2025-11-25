@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 import Footer from "@/components/Footer/Footer";
 import NavbarClient from "@/components/Navbar/NavbarClient";
+import { jwtDecode } from "jwt-decode";
+import { useEffect, useState } from "react";
 
 export default function DashboardLayout({
   children,
@@ -32,7 +32,7 @@ export default function DashboardLayout({
         } else {
           setNavItems([
             { to: "/features/users/home", label: "Home" },
-            { to: "/features/users/refund", label: "Refund" },
+            { to: "/features/users/refund", label: "History Widraw" },
           ]);
         }
       } catch (error) {

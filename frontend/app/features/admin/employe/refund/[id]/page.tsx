@@ -1,22 +1,24 @@
 "use client";
 
-import { useEmployee } from "@/app/hooks/useEmployees";
+import { useRefund } from "@/app/hooks/useRefund";
 
-const EmployeeDetailPage = ({ params }: { params: { id: string } }) => {
+const EmployeeRefundPage = ({ params }: { params: { id: string } }) => {
   const {
     employee,
-    salary,
-    setSalary,
+    streamIdUsers,
+      salary,
     loading,
-    handleSendReward,
+      handleSendReefund,
     isSuccess,
     isModalOpen,
     setIsModalOpen,
     isError,
-  } = useEmployee(params.id);
+  } = useRefund(params.id);
 
   if (loading) return <p>Loading...</p>;
   if (!employee) return <p>Employee not found</p>;
+
+    console.log(streamIdUsers);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white px-6 md:px-16 py-24 font-sans text-gray-800">
@@ -58,7 +60,7 @@ const EmployeeDetailPage = ({ params }: { params: { id: string } }) => {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                handleSendReward();
+                              handleSendReefund();
 
                 if (isSuccess) {
                   setSalary("");
@@ -84,7 +86,7 @@ const EmployeeDetailPage = ({ params }: { params: { id: string } }) => {
         : "hover:bg-red-700"
     }`}
                 >
-                  Send
+                  Refund
                 </button>
               </div>
             </form>
@@ -133,4 +135,4 @@ const EmployeeDetailPage = ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default EmployeeDetailPage;
+export default EmployeeRefundPage;

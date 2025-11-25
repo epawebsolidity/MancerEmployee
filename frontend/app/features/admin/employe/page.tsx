@@ -1,8 +1,8 @@
 "use client";
 
+import { useEmployees } from "@/app/hooks/useEmployees";
 import Card from "@/components/Card/Card";
 import { useRouter } from "next/navigation";
-import { useEmployees } from "@/app/hooks/useEmployees";
 
 const EmployePage = () => {
   const router = useRouter();
@@ -13,8 +13,12 @@ const EmployePage = () => {
   }
 
   const handleSendReward = (id_employe: string | number) => {
-    router.push(`/features/admin/employe/${id_employe}`);
+    router.push(`/features/admin/employe/deposite/${id_employe}`);
   };
+
+  const handleOnRefund = (id_employe: string | number) => {
+    router.push(`/features/admin/employe/refund/${id_employe}`);
+  }
 
   return (
     <div className="min-h-screen font-sans text-black px-6 md:px-16 py-24">
@@ -22,12 +26,6 @@ const EmployePage = () => {
         <h1 className="text-2xl sm:text-3xl font-bold tracking-wide">
           Mancer All Data Employe
         </h1>
-
-        <p className="text-black/70 text-sm sm:text-base leading-relaxed mt-2 mx-auto">
-          Welcome to the Employee Management System. Here you can find all the
-          data related to employees, including their profiles, roles, and
-          activities within the organization.
-        </p>
       </div>
 
       <div className="mt-12 grid gap-4 max-w-3xl mx-auto">
@@ -36,6 +34,7 @@ const EmployePage = () => {
             key={emp.id_employe || index}
             employee={emp}
             onSendReward={handleSendReward}
+            onRefund={handleOnRefund}
           />
         ))}
       </div>

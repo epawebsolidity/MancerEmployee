@@ -1,21 +1,8 @@
 "use client";
 
-<<<<<<< HEAD
-import { useEffect, useState } from "react";
-import { useAccount, useConnect, useWriteContract } from "wagmi";
-import { injected } from "wagmi/connectors";
-import { parseUnits } from "viem";
 import { abiTokenPhii } from "@/abi/abiTokenPhii";
-import { Employee } from "@/types/Employe";
-import { getAllowcationAirdrop } from "@/app/api/Airdrop";
-import { getUserIdFromToken } from "@/app/utils/cookies";
 import { EmployeUsersById } from "@/app/api/Employe";
-import { SalaryAllocation } from "@/types/Salary";
-
-=======
-import { abiTokenPhii } from "@/abi/abiTokenPhii";
-import { getAllowcationAirdrop } from "@/app/api/Airdrop";
-import { EmployeUsersById } from "@/app/api/Employe";
+import { getAllowcationAirdrop } from "@/app/api/Salary";
 import { eduChainTestnet } from "@/app/utils/chains";
 import { getUserIdFromToken } from "@/app/utils/cookies";
 import { Employee } from "@/types/Employe";
@@ -23,34 +10,35 @@ import { SalaryAllocation } from "@/types/Salary";
 import { useEffect, useState } from "react";
 import { createPublicClient, http, parseUnits } from "viem";
 import { waitForTransactionReceipt } from "viem/actions";
-import { useAccount, useConnect, useReadContract, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useConnect,
+  useReadContract,
+  useWriteContract
+} from "wagmi";
 import { injected } from "wagmi/connectors";
->>>>>>> fa65e95 (first commit)
+
 export function useUserHome() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [salary, setSalary] = useState<SalaryAllocation[]>([]);
   const [loading, setLoading] = useState(true);
-<<<<<<< HEAD
 
   const { address, isConnected } = useAccount();
   const { connect } = useConnect({ connector: injected() });
-  const { writeContract, isPending } = useWriteContract();
-=======
-  const { address, isConnected } = useAccount();
-  const { connect } = useConnect({ connector: injected() });
-  const { writeContract, isPending } = useWriteContract();
+const { writeContractAsync } = useWriteContract();
+const [isPending, setIsPending] = useState(false);
   const [statusWidraw, setStatusWidraw] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [remaining_balance, setRemainingBalance] = useState<any[]>([]);
+  const [remaining_balance, setRemainingBalance] = useState<any>();
 
   const publicClient = createPublicClient({
     chain: eduChainTestnet,
     transport: http(eduChainTestnet.rpcUrls.default.http[0]),
   });
->>>>>>> fa65e95 (first commit)
 
+  // Load user & salary data
   useEffect(() => {
     const loadData = async () => {
       const idUsers = getUserIdFromToken();
@@ -60,10 +48,8 @@ export function useUserHome() {
       const empData = empRes?.data || [];
       setEmployees(empData);
 
-      const employee = empData[0];
-      if (employee) {
-        const res = await getAllowcationAirdrop(employee.id_users);
-        console.log(res);
+      if (empData[0]) {
+        const res = await getAllowcationAirdrop(empData[0].id_users);
         setSalary(res || []);
       }
 
@@ -73,62 +59,47 @@ export function useUserHome() {
     loadData();
   }, []);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> fa65e95 (first commit)
   const employee = employees[0];
   const salaryValue = salary.length > 0 ? Number(salary[0]?.salary) : 0;
+  const amount = parseUnits(String(salaryValue), 18);
 
-  const decimals = 18;
-  const amount = parseUnits(String(salaryValue), decimals);
-<<<<<<< HEAD
-=======
-  const streamId = Number(salary[0]?.streamId);
-  const streamContract = process.env
-    .NEXT_PUBLIC_STREAM_CONTRACT_ADDRESS as `0x${string}`;
+  const streamContract =
+    process.env.NEXT_PUBLIC_STREAM_CONTRACT_ADDRESS as `0x${string}`;
 
+  const streamId = salary[0]?.streamId
+    ? Number(salary[0]?.streamId)
+    : 0;
 
-  const { data: stream, isError: streamErr } = useReadContract({
+  const {
+    data: stream,
+  } = useReadContract({
     address: streamContract,
     abi: abiTokenPhii,
     functionName: "getStream",
     args: [streamId],
   });
 
- useEffect(() => {
-  if (stream && isConnected) {
-    setRemainingBalance(stream);
-  } else if (!isConnected) {
-    connect();
-  }
-}, [stream, isConnected, connect]);
->>>>>>> fa65e95 (first commit)
-
-  const handleClaim = async () => {
+  // auto-update balance when stream changes
+  useEffect(() => {
     if (!isConnected) {
       connect();
       return;
     }
 
-    try {
-<<<<<<< HEAD
-      await writeContract({
-        address: process.env.NEXT_PUBLIC_PHII_CONTRACT_ADDRESS as `0x${string}`,
-        abi: abiTokenPhii,
-        functionName: "withdrawMax",
-        args: [amount, address],
-      });
-
-      alert("Reward claimed!");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to claim reward");
+    if (stream) {
+      setRemainingBalance(stream);
     }
-  };
+  }, [stream, isConnected, connect]);
 
-=======
-      const withdrawMaxEmployee = await writeContract({
+  // Claim function
+  const handleClaim = async () => {
+    if (!isConnected) {
+      connect();
+      return;
+    } 
+    console.log(streamId, "WidrawMax");
+    try {
+       const withdrawMaxEmployee = await writeContractAsync({
         address: streamContract,
         abi: abiTokenPhii,
         functionName: "withdrawMax",
@@ -150,69 +121,20 @@ export function useUserHome() {
     }
   };
 
-
-
-  const handleRefunMax = async () => {
-    if (!isConnected) {
-      connect();
-      return;
-    }
-
-    try {
-      const streamIdRaw = salary[0]?.streamId;
-      if (!streamIdRaw) throw new Error("streamId not found");
-
-      const streamIdBigInt = typeof streamIdRaw === "bigint" ? streamIdRaw : BigInt(streamIdRaw);
-      console.log("streamIdBigInt:", streamIdBigInt);
-
-      const refundMaxUsers = await writeContract({
-        address: streamContract,
-        abi: abiTokenPhii,
-        functionName: "refundMax",
-        args: [BigInt(streamIdBigInt)],
-        value: 0n,
-      });
-
-      const receipt = await waitForTransactionReceipt(publicClient, {
-        hash: refundMaxUsers.hash,
-      });
-      console.log("Transaction confirmed:", receipt);
-
-      setIsError(false);
-      setIsSuccess(true);
-      setIsModalOpen(true);
-    } catch (err) {
-      console.error("Failed to refund:", err);
-      setIsSuccess(false);
-      setIsError(true);
-      setIsModalOpen(true);
-    }
-  };
-
-
-
->>>>>>> fa65e95 (first commit)
   return {
     employee,
     salaryValue,
     loading,
-<<<<<<< HEAD
-    handleClaim,
-    isPending,
-=======
-    statusWidraw,
-    isSuccess,
-    isModalOpen,
-    isError,
     remaining_balance,
     handleClaim,
-    handleRefunMax,
     isPending,
-    setStatusWidraw,
+    statusWidraw,
+    isSuccess,
+    isError,
+    isModalOpen,
     setIsModalOpen,
+    setStatusWidraw,
     setIsSuccess,
     setIsError,
-    setRemainingBalance
->>>>>>> fa65e95 (first commit)
   };
 }

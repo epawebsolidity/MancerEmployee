@@ -1,8 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import MancerBanner from "@/public/assets/images/mancer-banner.jpg";
+import { useEmployees } from "@/app/hooks/useEmployees";
 import { useWalletBalances } from "@/app/hooks/useWalletBalances";
+import MancerBanner from "@/public/assets/images/mancer-banner.jpg";
+import Image from "next/image";
 
 const EDU_CONTRACT_ADDRESS = process.env
   .NEXT_PUBLIC_EDU_CONTRACT_ADDRESS as `0x${string}`;
@@ -12,6 +13,10 @@ const PHII_CONTRACT_ADDRESS = process.env
 const PagesAdminHome = () => {
   const { isConnected, eduBalance, phiiBalance, isLoadingEdu, isLoadingPhii } =
     useWalletBalances(EDU_CONTRACT_ADDRESS, PHII_CONTRACT_ADDRESS);
+
+  const { salaryUsersLog } = useEmployees();
+
+  console.log(salaryUsersLog);
 
   return (
     <div className="min-h-screen bg-[#f9140D] text-white font-sans relative overflow-hidden px-6 md:px-16">
@@ -75,17 +80,56 @@ const PagesAdminHome = () => {
           </h1>
         </div>
         <div className="mt-8 space-y-3">
-          <div className="bg-white border border-white/20 rounded-lg p-4 flex justify-between items-center backdrop-blur transition">
-            <div className="flex flex-col">
-              <span className="text-gray-800 text-base font-semibold">
-                Send 12.5 EDU
-              </span>
-              <span className="text-xs text-gray-800">20 Jan 2025 • 14:22</span>
+          {salaryUsersLog.length === 0 ? (
+            <div className="text-gray-500 text-sm text-center py-4">
+              No transaction yet.
             </div>
-            <button className="text-xs px-3 py-1.5 rounded-full bg-[#f9140D] border border-white/30 text-white hover:shadow-[0_0_10px_rgba(249,20,13,0.8)] transition">
-              View Details
-            </button>
-          </div>
+          ) : (
+            salaryUsersLog.map((item, index) => {
+              const color =
+                item.type === "createAndDeposit"
+                  ? "text-green-600"
+                  : "text-red-600";
+
+              const shortHash =
+                item.hash?.slice(0, 6) + "..." + item.hash?.slice(-4);
+
+              return (
+                <div
+                  key={index}
+                  className="bg-white border border-gray-200 rounded-xl p-4 flex justify-between items-center shadow-sm hover:shadow-md transition"
+                >
+                  <div className="flex flex-col">
+                    <span className={`font-semibold ${color}`}>
+                      {item?.type} {" "} {item?.salary} PHII
+                    </span>
+
+                    <span className="text-xs text-gray-500">
+                      {item?.month || "-"} • Stream #{item?.streamId}
+                    </span>
+
+                    {item?.hash && (
+                      <span className="text-[10px] text-gray-400 mt-1">
+                        Hash: {shortHash}
+                      </span>
+                    )}
+                  </div>
+
+                  <button
+                    className="text-xs px-3 py-1.5 rounded-full bg-[#f9140D] border border-white/30 text-white hover:opacity-90 transition"
+                    onClick={() =>
+                      window.open(
+                        `https://edu-chain-testnet.blockscout.com/tx/${item.hash}`,
+                        "_blank"
+                      )
+                    }
+                  >
+                    View
+                  </button>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
     </div>

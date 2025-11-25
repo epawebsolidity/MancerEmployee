@@ -36,62 +36,21 @@ export const claimAllowcationEmploye = async (req, res) => {
 
 
 
-export const createAllowcationEmploye = async (req, res) => {
-<<<<<<< HEAD
-  const { id_employe, salary, status_cleam } = req.body;
-
-  try {
-    const [existing] = await db.query(
-      "SELECT * FROM emp_salary WHERE id_employe = ?",
-      [id_employe]
-    );
-    const current = existing[0];
-    if (!current || current.status_cleam === "Claimed") {
-      const [rows] = await db.query(
-        "INSERT INTO emp_salary (id_employe, salary, status_cleam) VALUES (?, ?, ?)",
-        [id_employe, salary, status_cleam]
-      );
-
-=======
-  const { id_employe, salary, status_cleam, hash, streamId } = req.body;
-
+export const createAllowcationEmploye = async (req, res) => {    
+  const { id_employe, salary, month, hash, streamId } = req.body;
   try {
       const [rows] = await db.query(
-        "INSERT INTO emp_salary (id_employe, salary, status_cleam, hash, streamId) VALUES (?, ?, ?, ?, ?)",
-        [id_employe, salary, status_cleam, hash, streamId]
+        "INSERT INTO emp_salary (id_employe, salary, month, hash, streamId) VALUES (?, ?, ?, ?, ?)",
+        [id_employe, salary, month, hash, streamId]
       );
->>>>>>> fa65e95 (first commit)
       return res.status(200).json({
         success: true,
         message: "Airdrop allocation created",
         data: rows,
       });
-<<<<<<< HEAD
-    }
-    const newSalary = Number(current.salary) + Number(salary);
 
-    await db.query(
-      `UPDATE emp_salary 
-       SET salary = ?, status_cleam = ?
-       WHERE id_employe = ?`,
-      [newSalary, status_cleam, id_employe]
-    );
-
-    return res.status(200).json({
-      success: true,
-      message: "Salary updated successfully",
-      data: {
-        id_employe,
-        salary: newSalary,
-        status_cleam,
-      },
-    });
-
-  } catch (error) {
-=======
     } catch (error) {
->>>>>>> fa65e95 (first commit)
-    console.error("Error creating airdrop:", error);
+          console.error("Error creating airdrop:", error);
     return res.status(500).json({ message: "Error creating airdrop" });
   }
 };
@@ -101,11 +60,7 @@ export const getAllowcationEmploye = async (req, res) => {
     const {id_employe} = req.params;
     try {
         const [rows] = await db.query(`SELECT * FROM emp_salary WHERE id_employe = ?`, [id_employe]);
-<<<<<<< HEAD
-       const filtered = rows.filter(item => item.status_cleam !== "Claimed");
-=======
        const filtered = rows.filter(item => item.month === "November");
->>>>>>> fa65e95 (first commit)
 
 res.status(200).json({
   success: true,
@@ -114,11 +69,8 @@ res.status(200).json({
     } catch (error) {
         res.status(500).json({ message: "Error fetching wallet data" });
     }
-<<<<<<< HEAD
-}
-=======
-}
 
+}
 
 // export const getAllowcationEmploye = async (req, res) => {
 //   const { id_employe } = req.params;
@@ -149,4 +101,16 @@ res.status(200).json({
 //     res.status(500).json({ message: "Error fetching wallet data" });
 //   }
 // };
->>>>>>> fa65e95 (first commit)
+
+
+export const getSalaryBalanceEmploye = async (req, res) => {
+  try {
+    const [rows] = await db.query(`SELECT * FROM emp_salary`);
+    res.status(200).json({
+      success: true,
+      data: rows,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching wallet data" });
+  }
+}
