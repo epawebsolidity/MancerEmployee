@@ -51,16 +51,15 @@ export default function PageUsersHome() {
             <h2 className="text-4xl font-extrabold text-yellow-800 mt-1">
               {remaining_balance
                 ? (
-                  Number(remaining_balance.balance) /
-                  10 ** remaining_balance.tokenDecimals
-                ).toLocaleString()
-                : 0} {" "}
+                    Number(remaining_balance.balance) /
+                    10 ** remaining_balance.tokenDecimals
+                  ).toLocaleString()
+                : 0}{" "}
               PHII
             </h2>
 
             <p className="text-gray-700 text-sm font-medium mt-2">
-              Salary Mounthly:{" "}
-              {salaryValue} PHII
+              Salary Mounthly: {salaryValue} PHII
             </p>
           </div>
 
@@ -68,9 +67,9 @@ export default function PageUsersHome() {
           <button
             onClick={handleClaim}
             disabled={isPending}
-            className="mt-8 w-full py-3 bg-yellow-400 text-black font-bold rounded-2xl hover:bg-yellow-500 transition transform hover:-translate-y-0.5 shadow-md"
+            className="mt-8 w-full py-3 bg-[#f9140D] text-white font-bold rounded-2xl hover:bg-yellow-500 transition transform hover:-translate-y-0.5 shadow-md"
           >
-            {isPending ? "Processing..." : "Claim Reward"}
+            {isPending ? "Processing..." : "Withdraw"}
           </button>
         </div>
       </div>

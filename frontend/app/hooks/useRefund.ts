@@ -5,13 +5,10 @@ import { EmployeUsers } from "@/app/api/Employe";
 import { eduChainTestnet } from "@/app/utils/chains";
 import type { Employee } from "@/types/Employe";
 import { useEffect, useState } from "react";
-import {
-    createPublicClient,
-    http
-} from "viem";
+import { createPublicClient, http } from "viem";
 import { useAccount, useConnect, useWriteContract } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { getAllowcationAirdrop } from "../api/Salary";
+import { getAllowcationAirdrop, createAllowcationAirdrop } from "../api/Salary";
 import { getWalletByUserId } from "../api/Wallet";
 export const useRefund = (id: string | number) => {
   const [employee, setEmployee] = useState<Employee | null>(null);
@@ -39,8 +36,8 @@ export const useRefund = (id: string | number) => {
       setLoading(true);
       try {
         const res = await EmployeUsers();
-        console.log(res);
         const emp = res.data.find((e: Employee) => e.id_employe === Number(id));
+        console.log(emp);
         setEmployee(emp || null);
       } catch (err) {
         console.error("Failed to fetch employee:", err);
@@ -53,32 +50,28 @@ export const useRefund = (id: string | number) => {
   }, [id]);
 
   useEffect(() => {
-  if (!employee) return; 
+    if (!employee) return;
 
-  const fetchBalanceUsers = async () => {
-    setLoading(true);
-    try {
-      const dateNow = new Date().toLocaleString("en-US", { month: "long" });
-      console.log(dateNow);
+    const fetchBalanceUsers = async () => {
+      setLoading(true);
+      try {
+        const dateNow = new Date().toLocaleString("en-US", { month: "long" });
+        console.log(dateNow);
 
-      const res = await getAllowcationAirdrop(employee.id_employe);
+        const res = await getAllowcationAirdrop(Number(employee?.id_employe));
 
-      if (
-        res[0]?.month === dateNow &&
-        res[0]?.type === "createAndDeposite"
-      ) {
-        setStreamIdUsers(res[0]?.streamId);
+        if (res[0]?.month === dateNow && res[0]?.type === "createAndDeposit") {
+          setStreamIdUsers(res[0]?.streamId);
+        }
+      } catch (err) {
+        console.error("Failed to fetch employee:", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Failed to fetch employee:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchBalanceUsers();
-}, [employee]);
-
+    fetchBalanceUsers();
+  }, [employee]);
 
   const handleSendReefund = async () => {
     if (!address) {
@@ -94,21 +87,40 @@ export const useRefund = (id: string | number) => {
         console.log("Wallet employee belum tersedia!");
         return;
       }
-      const wRufund = await writeContractAsync({
+
+      const txRefund = await writeContractAsync({
         address: streamContract,
         abi: abiTokenPhii,
         functionName: "refundMax",
         args: [BigInt(streamIdUsers)],
+        value: BigInt(0),
       });
 
-      console.log(wRufund, "Rufund Log");
+      console.log("Transaction success:", txRefund);
+
+      const dateNow = new Date().toLocaleString("en-US", { month: "long" });
+      console.log(dateNow);
+      const month = dateNow;
+      const hash = txRefund;
+      const type = "refundMax";
+      const streamIdFromTx = streamIdUsers;
+      const streamIdString = streamIdFromTx?.toString();
+      const salaryRefund = "0";
+      const createDatabase = createAllowcationAirdrop(
+        employee.id_employe,
+        salaryRefund,
+        month,
+        hash,
+        type,
+        streamIdString
+      );
+      console.log(createDatabase, "simpan ke database");
       setIsSuccess(true);
-      setIsError(true);
-      console.log("Reward sent successfully!");
-    } catch (err) {
+      setIsError(false);
+    } catch (err: any) {
+      console.error("Transaction failed:", err?.shortMessage || err);
       setIsSuccess(false);
       setIsError(true);
-      console.error("Failed to send reward:", err);
     }
     setIsModalOpen(true);
   };

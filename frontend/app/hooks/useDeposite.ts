@@ -6,12 +6,7 @@ import { eduChainTestnet } from "@/app/utils/chains";
 import type { Employee } from "@/types/Employe";
 import { parseUnits } from "ethers";
 import { useEffect, useState } from "react";
-import {
-    createPublicClient,
-    decodeEventLog,
-    erc20Abi,
-    http
-} from "viem";
+import { createPublicClient, decodeEventLog, erc20Abi, http } from "viem";
 import { waitForTransactionReceipt } from "viem/actions";
 import { useAccount, useConnect, useWriteContract } from "wagmi";
 import { injected } from "wagmi/connectors";
@@ -69,8 +64,8 @@ export const useDeposite = (id: string | number) => {
         return;
       }
       const recipient: `0x${string}` = res.address_wallet;
-      const amount = parseUnits(salary || "0", 18); // misal salary="10" → 10*10^18
-      const duration = BigInt(30 * 24 * 60 * 60); // 30 hari dalam detik
+      const amount = parseUnits(salary || "0", 18);
+      const duration = BigInt(30 * 24 * 60 * 60);
       const ratePerSecond = amount / duration;
 
       console.log("amount:", amount.toString());
@@ -112,7 +107,7 @@ export const useDeposite = (id: string | number) => {
         hash: createTx,
       });
 
-     let streamId: bigint | null = null;
+      let streamId: bigint | null = null;
 
       for (const log of receipt.logs) {
         try {
@@ -136,7 +131,9 @@ export const useDeposite = (id: string | number) => {
       }
 
       console.log("streamId:", streamId?.toString());
-      const month = "November";
+      const dateNow = new Date().toLocaleString("en-US", { month: "long" });
+      console.log(dateNow);
+      const month = dateNow;
       const hash = createTx;
       const type = "createAndDeposit";
       const streamIdFromTx = streamId;
@@ -144,9 +141,9 @@ export const useDeposite = (id: string | number) => {
       const createDatabase = createAllowcationAirdrop(
         employee.id_employe,
         salary,
-        month, 
-        hash, 
+        month,
         type,
+        hash,
         streamIdString
       );
       console.log(createDatabase, "simpan ke database");

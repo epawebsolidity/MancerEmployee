@@ -20,8 +20,8 @@ export function useWalletHandler() {
 
         const checkingWallet = await getWalletByUserId(userId);
 
-        if (!checkingWallet) {
-          console.log("DB empty → creating new wallet");
+        if (!checkingWallet || !checkingWallet.address_wallet) {
+          console.log("DB empty or wallet empty → creating new wallet");
           await createWalletUser(userId, address);
           return;
         }

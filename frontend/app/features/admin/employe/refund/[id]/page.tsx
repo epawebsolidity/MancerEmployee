@@ -6,9 +6,9 @@ const EmployeeRefundPage = ({ params }: { params: { id: string } }) => {
   const {
     employee,
     streamIdUsers,
-      salary,
+    salary,
     loading,
-      handleSendReefund,
+    handleSendReefund,
     isSuccess,
     isModalOpen,
     setIsModalOpen,
@@ -18,7 +18,7 @@ const EmployeeRefundPage = ({ params }: { params: { id: string } }) => {
   if (loading) return <p>Loading...</p>;
   if (!employee) return <p>Employee not found</p>;
 
-    console.log(streamIdUsers, "streamIdUsers");
+  console.log(streamIdUsers, "streamIdUsers");
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white px-6 md:px-16 py-24 font-sans text-gray-800">
@@ -60,7 +60,7 @@ const EmployeeRefundPage = ({ params }: { params: { id: string } }) => {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                              handleSendReefund();
+                handleSendReefund();
 
                 if (isSuccess) {
                   setSalary("");
@@ -70,7 +70,7 @@ const EmployeeRefundPage = ({ params }: { params: { id: string } }) => {
             >
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <input
-                                  hidden
+                  hidden
                   type="text"
                   placeholder="send token PHII..."
                   className="w-full sm:w-2/3 px-4 text-xs py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none text-gray-700"
@@ -97,7 +97,7 @@ const EmployeeRefundPage = ({ params }: { params: { id: string } }) => {
                 <div className="bg-white rounded-lg shadow-lg p-6 w-96">
                   <h2 className="text-xl font-bold text-red-500">Error!</h2>
                   <p className="mt-2 text-gray-700">
-                                      Failed to send Refund. Please try again.
+                    Failed to send Refund. Please try again.
                   </p>
                   <div className="mt-4 flex justify-end">
                     <button
@@ -116,7 +116,7 @@ const EmployeeRefundPage = ({ params }: { params: { id: string } }) => {
                 <div className="bg-white rounded-lg shadow-lg p-6 w-96">
                   <h2 className="text-xl font-bold text-green-500">Success!</h2>
                   <p className="mt-2 text-gray-700">
-                                      Refund has been successfully sent!
+                    Refund has been successfully sent!
                   </p>
                   <div className="mt-4 flex justify-end">
                     <button

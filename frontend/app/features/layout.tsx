@@ -32,7 +32,7 @@ export default function DashboardLayout({
         } else {
           setNavItems([
             { to: "/features/users/home", label: "Home" },
-            { to: "/features/users/refund", label: "History Widraw" },
+            { to: "/features/users/refund", label: "History Withdraw" },
           ]);
         }
       } catch (error) {

@@ -93,7 +93,7 @@ const EmployeeDepositePage = ({ params }: { params: { id: string } }) => {
                 <div className="bg-white rounded-lg shadow-lg p-6 w-96">
                   <h2 className="text-xl font-bold text-red-500">Error!</h2>
                   <p className="mt-2 text-gray-700">
-                    Failed to send Salary. Please try again.
+                    Failed to send Deposit. Please try again.
                   </p>
                   <div className="mt-4 flex justify-end">
                     <button
@@ -112,7 +112,7 @@ const EmployeeDepositePage = ({ params }: { params: { id: string } }) => {
                 <div className="bg-white rounded-lg shadow-lg p-6 w-96">
                   <h2 className="text-xl font-bold text-green-500">Success!</h2>
                   <p className="mt-2 text-gray-700">
-                    Salary has been successfully sent!
+                    Deposit has been successfully sent!
                   </p>
                   <div className="mt-4 flex justify-end">
                     <button

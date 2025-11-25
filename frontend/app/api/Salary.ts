@@ -1,6 +1,5 @@
 import api from "../utils/axios";
 
-// CREATE AIRDROP (NEW)
 export const createAllowcationAirdrop = async (
   id_employe: number,
   salary: string,
@@ -15,6 +14,7 @@ export const createAllowcationAirdrop = async (
       salary,
       month,
       hash,
+      type,
       streamId,
     });
 
@@ -26,7 +26,6 @@ export const createAllowcationAirdrop = async (
   }
 };
 
-// GET AIRDROP BY EMPLOYEE
 export const getAllowcationAirdrop = async (id_employe: number) => {
   try {
     console.log(id_employe);
@@ -39,7 +38,6 @@ export const getAllowcationAirdrop = async (id_employe: number) => {
   }
 };
 
-// CLAIM AIRDROP
 export const claimAirdropUsers = async (to: string, amount: string) => {
   try {
     const res = await api.post("/salary/reward", { to, amount });
@@ -49,7 +47,6 @@ export const claimAirdropUsers = async (to: string, amount: string) => {
     return null;
   }
 };
-
 
 export const getBalanceHistoryEmploye = async () => {
   try {

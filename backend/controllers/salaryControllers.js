@@ -60,12 +60,10 @@ export const getAllowcationEmploye = async (req, res) => {
     const {id_employe} = req.params;
     try {
         const [rows] = await db.query(`SELECT * FROM emp_salary WHERE id_employe = ?`, [id_employe]);
-       const filtered = rows.filter(item => item.month === "November");
-
-res.status(200).json({
-  success: true,
-  data: filtered,
-});
+        res.status(200).json({
+          success: true,
+          data: rows,
+        });
     } catch (error) {
         res.status(500).json({ message: "Error fetching wallet data" });
     }
