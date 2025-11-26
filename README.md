@@ -32,6 +32,7 @@ This application allows companies to create streaming payrolls, employees to wit
 
 ## 📂 Project Structure
 
+```base
 MancerEmployee/
 │── backend/
 │ ├── src/
@@ -42,10 +43,7 @@ MancerEmployee/
 │ ├── app/
 │ ├── package.json
 │ └── .env.local
-
-yaml
-Copy code
-
+```
 ---
 
 ## 🔧 Environment Setup
