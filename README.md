@@ -150,18 +150,18 @@ http://localhost:3000
 </p>
 
 <p align="center">
-  <img src="hhttps://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_02.png"  width="400" />
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_02.png"  width="400" />
 </p>
 
 
 <p align="center">
-  <img src="hhttps://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_03.png"  width="400" />
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_03.png"  width="400" />
 </p>
 
 <p align="center">
-  <img src="hhttps://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_04.png"  width="400" />
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_04.png"  width="400" />
 </p>
 
 <p align="center">
-  <img src="hhttps://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_05.png"  width="400" />
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_05.png"  width="400" />
 </p>
