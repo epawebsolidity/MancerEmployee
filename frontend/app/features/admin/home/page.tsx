@@ -101,7 +101,7 @@ const PagesAdminHome = () => {
                 >
                   <div className="flex flex-col">
                     <span className={`font-semibold ${color}`}>
-                      {item?.type} {" "} {item?.salary} PHII
+                      {item?.type} {" "}  {Number(item?.salary).toFixed(6)} PHII
                     </span>
 
                     <span className="text-xs text-gray-500">

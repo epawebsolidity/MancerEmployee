@@ -25,7 +25,7 @@ export function useUserHome() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [salary, setSalary] = useState<SalaryAllocation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [userstxHistory, setUserstxHistory] = useState<string>("");
+  const [userstxHistory, setUserstxHistory] = useState<string>();
   const { address, isConnected } = useAccount();
   const { connect } = useConnect({ connector: injected() });
   const { writeContractAsync } = useWriteContract();
@@ -72,31 +72,32 @@ export function useUserHome() {
   useEffect(() => {
   if (!employee) return;
 
-  const fetchTransactionUsers = async () => {
-    setLoading(true);
-    try {
-      const res = await getAllowcationAirdrop(Number(employee.id_employe));
+const fetchTransactionUsers = async () => {
+  setLoading(true);
+  try {
+    const res = await getAllowcationAirdrop(Number(employee.id_employe));
 
-      console.log("RES RAW:", res);
+    console.log("RES RAW:", res);
 
-      if (Array.isArray(res)) {
-        const withdrawData = res.find(
-          (item) => item.type === "withdrawMax"
-        );
+    if (Array.isArray(res)) {
+      // Ambil semua transaksi withdrawMax
+      const withdrawData = res.filter(
+        (item) => item.type === "withdrawMax"
+      );
 
-        console.log("TYPE FOUND:", withdrawData);
+      console.log("FOUND:", withdrawData);
 
-        if (withdrawData) {
-          setUserstxHistory(withdrawData);
-        }
-      }
-
-    } catch (err) {
-      console.error("Failed to fetch employee:", err);
-    } finally {
-      setLoading(false);
+      setUserstxHistory(withdrawData); // HARUS ARRAY
     }
-  };
+
+  } catch (err) {
+    console.error("Failed to fetch employee:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   fetchTransactionUsers();
 }, [employee]);

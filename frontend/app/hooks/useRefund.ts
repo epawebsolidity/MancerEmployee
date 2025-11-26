@@ -6,10 +6,12 @@ import { eduChainTestnet } from "@/app/utils/chains";
 import type { Employee } from "@/types/Employe";
 import { useEffect, useState } from "react";
 import { createPublicClient, http } from "viem";
+import { waitForTransactionReceipt } from "viem/actions";
 import { useAccount, useConnect, useWriteContract } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { getAllowcationAirdrop, createAllowcationAirdrop } from "../api/Salary";
+import { createAllowcationAirdrop, getAllowcationAirdrop } from "../api/Salary";
 import { getWalletByUserId } from "../api/Wallet";
+
 export const useRefund = (id: string | number) => {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [streamIdUsers, setStreamIdUsers] = useState<string>("");
@@ -73,57 +75,59 @@ export const useRefund = (id: string | number) => {
     fetchBalanceUsers();
   }, [employee]);
 
-  const handleSendReefund = async () => {
-    if (!address) {
-      await connect();
+const handleSendReefund = async () => {
+  if (!address) {
+    await connect();
+    return;
+  }
+
+  if (!salary || !employee) return;
+
+  try {
+    const res = await getWalletByUserId(Number(employee.id_users));
+    if (!res?.address_wallet) {
+      console.log("Wallet employee belum tersedia!");
       return;
     }
 
-    if (!salary || !employee) return;
+    const txRefund = await writeContractAsync({
+      address: streamContract,
+      abi: abiTokenPhii,
+      functionName: "refundMax",
+      args: [BigInt(streamIdUsers)],
+      value: BigInt(0),
+    });
 
-    try {
-      const res = await getWalletByUserId(Number(employee.id_users));
-      if (!res?.address_wallet) {
-        console.log("Wallet employee belum tersedia!");
-        return;
-      }
+    const txRefundReceipt = await waitForTransactionReceipt(publicClient, {
+      hash: txRefund,
+    });
 
-      const txRefund = await writeContractAsync({
-        address: streamContract,
-        abi: abiTokenPhii,
-        functionName: "refundMax",
-        args: [BigInt(streamIdUsers)],
-        value: BigInt(0),
-      });
+    console.log("Transaction confirmed:", txRefundReceipt);
 
-      console.log("Transaction success:", txRefund);
-
-      const dateNow = new Date().toLocaleString("en-US", { month: "long" });
-      console.log(dateNow);
-      const month = dateNow;
-      const hash = txRefund;
-      const type = "refundMax";
-      const streamIdFromTx = streamIdUsers;
-      const streamIdString = streamIdFromTx?.toString();
-      const salaryRefund = "0";
-      const createDatabase = createAllowcationAirdrop(
+    const month = new Date().toLocaleString("en-US", { month: "long" });
+    const type = "refundMax";
+    const hash = txRefund;
+    const streamIdString = streamIdUsers?.toString();
+    const salaryRefund = "0";
+  
+      const createDatabaseRefund = await createAllowcationAirdrop(
         employee.id_employe,
         salaryRefund,
         month,
-        hash,
         type,
+        hash,
         streamIdString
       );
-      console.log(createDatabase, "simpan ke database");
-      setIsSuccess(true);
-      setIsError(false);
-    } catch (err: any) {
-      console.error("Transaction failed:", err?.shortMessage || err);
-      setIsSuccess(false);
-      setIsError(true);
-    }
-    setIsModalOpen(true);
-  };
+      console.log(createDatabaseRefund);
+    setIsSuccess(true);
+    setIsError(false);
+  } catch (err: any) {
+    console.error(err);
+    setIsSuccess(false);
+    setIsError(true);
+  }
+};
+
   return {
     employee,
     streamIdUsers,
