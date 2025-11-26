@@ -97,6 +97,15 @@ http://localhost:3000
 ## Demo
 ### DESKTOP
 
+
 <p align="center">
-  <img src="https://github.com/epa-fe-001/Web3-TokenERC-FrontEnd-React/blob/main/front-testnet/src/images/claim_faucet.PNG" alt="Claim Faucet" width="400" />
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/login.png" alt="Claim Faucet" width="400" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/deskop_home_admin.png" alt="Claim Faucet" width="400" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/deskop_home_admin.png" alt="Claim Faucet" width="400" />
 </p>
