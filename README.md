@@ -70,6 +70,7 @@ PORT=5000
 ---
 ## 🧪 Blockscout Test Results
 ### Transaction Logs
+
 | Action               | Link                                                                                                                                                                                                                             |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Approve**          | [https://edu-chain-testnet.blockscout.com/tx/0x23648c29a1ae472471a554ab7f239c2f9d8e81f7488dc160c3ffaab3f01b386b](https://edu-chain-testnet.blockscout.com/tx/0x23648c29a1ae472471a554ab7f239c2f9d8e81f7488dc160c3ffaab3f01b386b) |
