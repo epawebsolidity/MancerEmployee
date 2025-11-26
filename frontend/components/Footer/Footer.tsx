@@ -2,7 +2,6 @@ export default function Footer() {
   return (
     <footer className="bg-[#f9140D] text-yellow-100">
       <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
-        {/* Brand */}
         <div className="flex flex-col items-center md:items-start">
           <h2 className="text-2xl font-extrabold mb-2">Mancer App</h2>
         </div>

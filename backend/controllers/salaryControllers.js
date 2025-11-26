@@ -1,9 +1,7 @@
 import { createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import tokenAbi from "../abi/tokenAbi.json" with { type: "json" };
 import db from "../config/database.js";
 import { educhainTestnet } from "../config/network.js";
-
 
 export const claimAllowcationEmploye = async (req, res) => {
   try {
@@ -34,41 +32,39 @@ export const claimAllowcationEmploye = async (req, res) => {
   }
 };
 
-
-
-export const createAllowcationEmploye = async (req, res) => {    
+export const createAllowcationEmploye = async (req, res) => {
   const { id_employe, salary, month, type, hash, streamId } = req.body;
   try {
-      const [rows] = await db.query(
-        "INSERT INTO emp_salary (id_employe, salary, month, type, hash, streamId) VALUES (?, ?, ?, ?, ?, ?)",
-        [id_employe, salary, month, type, hash, streamId]
-      );
-      return res.status(200).json({
-        success: true,
-        message: "Airdrop allocation created",
-        data: rows,
-      });
-
-    } catch (error) {
-          console.error("Error creating airdrop:", error);
+    const [rows] = await db.query(
+      "INSERT INTO emp_salary (id_employe, salary, month, type, hash, streamId) VALUES (?, ?, ?, ?, ?, ?)",
+      [id_employe, salary, month, type, hash, streamId]
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Airdrop allocation created",
+      data: rows,
+    });
+  } catch (error) {
+    console.error("Error creating airdrop:", error);
     return res.status(500).json({ message: "Error creating airdrop" });
   }
 };
 
-
 export const getAllowcationEmploye = async (req, res) => {
-    const {id_employe} = req.params;
-    try {
-        const [rows] = await db.query(`SELECT * FROM emp_salary WHERE id_employe = ?`, [id_employe]);
-        res.status(200).json({
-          success: true,
-          data: rows,
-        });
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching wallet data" });
-    }
-
-}
+  const { id_employe } = req.params;
+  try {
+    const [rows] = await db.query(
+      `SELECT * FROM emp_salary WHERE id_employe = ?`,
+      [id_employe]
+    );
+    res.status(200).json({
+      success: true,
+      data: rows,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching wallet data" });
+  }
+};
 
 // export const getAllowcationEmploye = async (req, res) => {
 //   const { id_employe } = req.params;
@@ -100,7 +96,6 @@ export const getAllowcationEmploye = async (req, res) => {
 //   }
 // };
 
-
 export const getSalaryBalanceEmploye = async (req, res) => {
   try {
     const [rows] = await db.query(`SELECT * FROM emp_salary`);
@@ -111,4 +106,4 @@ export const getSalaryBalanceEmploye = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error fetching wallet data" });
   }
-}
+};
