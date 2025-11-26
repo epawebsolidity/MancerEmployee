@@ -50,22 +50,19 @@ Copy code
 
 ## 🔧 Environment Setup
 
-### 🔹 1. Frontend — `frontend/.env.local`
-
+### 🔹 1. Frontend — `frontend/.env`
+```sh
 NEXT_PUBLIC_PHII_CONTRACT_ADDRESS=
 NEXT_PUBLIC_STREAM_CONTRACT_ADDRESS=
 
 NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-
-yaml
-Copy code
-
+```
 ---
 
 ### 🔹 2. Backend — `backend/.env`
-
+```sh
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=
@@ -74,7 +71,7 @@ DB_NAME=mancer_db
 JWT_SECRET=
 JWT_REFRESH_SECRET=
 PORT=5000
-
+```
 ---
 
 ## 🔗 Smart Contract Addresses
