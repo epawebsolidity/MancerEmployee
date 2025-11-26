@@ -19,7 +19,7 @@ export const authController = async (req, res) => {
     const accessToken = jwt.sign(
       { id: data.id_users, email: data.email, role: data.role },
       process.env.JWT_SECRET,
-      { expiresIn: "30s" } 
+      { expiresIn: "1h" } 
     );
     const refreshToken = jwt.sign(
       { id: data.id_users, email: data.email, role: data.role },
@@ -90,7 +90,7 @@ export const refreshController = async (req, res) => {
     const newAccessToken = jwt.sign(
       { id: decoded.id, email: decoded.email, role: decoded.role },
       process.env.JWT_SECRET,
-      { expiresIn: "30s" }
+       { expiresIn: "1h" } 
     );
 
     const newRefreshToken = jwt.sign(
@@ -109,7 +109,7 @@ export const refreshController = async (req, res) => {
       secure: true,
       sameSite: "none",
       path: "/",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 60 * 60 * 1000,
     });
 
     return res.status(200).json({ accessToken: newAccessToken });

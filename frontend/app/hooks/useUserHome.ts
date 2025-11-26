@@ -3,15 +3,15 @@
 import { abiTokenPhii } from "@/abi/abiTokenPhii";
 import { EmployeUsersById } from "@/app/api/Employe";
 import {
-  getAllowcationAirdrop,
   createAllowcationAirdrop,
+  getAllowcationAirdrop,
 } from "@/app/api/Salary";
 import { eduChainTestnet } from "@/app/utils/chains";
 import { getUserIdFromToken } from "@/app/utils/cookies";
 import { Employee } from "@/types/Employe";
 import { SalaryAllocation } from "@/types/Salary";
 import { useEffect, useState } from "react";
-import { createPublicClient, http, parseUnits, decodeEventLog } from "viem";
+import { createPublicClient, decodeEventLog, http, parseUnits } from "viem";
 import { waitForTransactionReceipt } from "viem/actions";
 import {
   useAccount,
@@ -25,7 +25,7 @@ export function useUserHome() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [salary, setSalary] = useState<SalaryAllocation[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const [userstxHistory, setUserstxHistory] = useState<string>("");
   const { address, isConnected } = useAccount();
   const { connect } = useConnect({ connector: injected() });
   const { writeContractAsync } = useWriteContract();
@@ -35,6 +35,14 @@ export function useUserHome() {
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [remaining_balance, setRemainingBalance] = useState<any>();
+  const employee = employees[0];
+  const salaryValue = salary.length > 0 ? Number(salary[0]?.salary) : 0;
+  const amount = parseUnits(String(salaryValue), 18);
+
+  const streamContract = process.env
+    .NEXT_PUBLIC_STREAM_CONTRACT_ADDRESS as `0x${string}`;
+
+  const streamId = salary[0]?.streamId ? Number(salary[0]?.streamId) : 0;
 
   const publicClient = createPublicClient({
     chain: eduChainTestnet,
@@ -61,14 +69,38 @@ export function useUserHome() {
     loadData();
   }, []);
 
-  const employee = employees[0];
-  const salaryValue = salary.length > 0 ? Number(salary[0]?.salary) : 0;
-  const amount = parseUnits(String(salaryValue), 18);
+  useEffect(() => {
+  if (!employee) return;
 
-  const streamContract = process.env
-    .NEXT_PUBLIC_STREAM_CONTRACT_ADDRESS as `0x${string}`;
+  const fetchTransactionUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await getAllowcationAirdrop(Number(employee.id_employe));
 
-  const streamId = salary[0]?.streamId ? Number(salary[0]?.streamId) : 0;
+      console.log("RES RAW:", res);
+
+      if (Array.isArray(res)) {
+        const withdrawData = res.find(
+          (item) => item.type === "withdrawMax"
+        );
+
+        console.log("TYPE FOUND:", withdrawData);
+
+        if (withdrawData) {
+          setUserstxHistory(withdrawData);
+        }
+      }
+
+    } catch (err) {
+      console.error("Failed to fetch employee:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchTransactionUsers();
+}, [employee]);
+
 
   const { data: stream } = useReadContract({
     address: streamContract,
@@ -77,7 +109,6 @@ export function useUserHome() {
     args: [streamId],
   });
 
-  // auto-update balance when stream changes
   useEffect(() => {
     if (!isConnected) {
       connect();
@@ -115,13 +146,14 @@ export function useUserHome() {
       });
       console.log("Transaction confirmed:", txReceipt);
 
-      let amountWithdraw: bigint | null = null;
-
       const relevantLogs = txReceipt.logs.filter(
         (log) => log.address.toLowerCase() === streamContract.toLowerCase()
       );
 
-      for (const log of relevantLogs) {
+      console.log("Relevant logs:", relevantLogs);
+      let amountWithdraw: bigint | null = null;
+
+      for (const log of txReceipt.logs) {
         try {
           const parsedLog = decodeEventLog({
             abi: abiTokenPhii,
@@ -129,24 +161,33 @@ export function useUserHome() {
             topics: log.topics,
           });
 
-          if (parsedLog.name === "WithdrawMax") {
-            amountWithdraw = parsedLog.args.amount as bigint;
-            console.log("Amount withdrawn:", amountWithdraw.toString());
-            break;
+          console.log("DECODED LOG:", parsedLog);
+
+          if (parsedLog.eventName === "WithdrawFromFlowStream") {
+            amountWithdraw = parsedLog.args.withdrawAmount as bigint;
+            console.log("Withdraw amount =", amountWithdraw.toString());
           }
+          if (parsedLog.eventName === "Refund") {
+            console.log("Refund streamId =", parsedLog.args.streamId.toString());
+          }
+
         } catch (err) {
           console.warn("Log decode failed:", err);
         }
       }
 
-      console.log(amountWithdraw?.toString(), "sale");
+      const decimals = 18;
+      const formatted =
+        amountWithdraw
+          ? Number(amountWithdraw) / 10 ** decimals
+          : 0;
 
       const dateNow = new Date().toLocaleString("en-US", { month: "long" });
       const month = dateNow;
       const hash = withdrawMaxEmployee;
       const type = "withdrawMax";
       const streamIdString = streamId.toString();
-      const salaryUsersBa = amountWithdraw?.toString() || "0";
+      const salaryUsersBa = formatted?.toString() || "0";
 
       const createDatabase = await createAllowcationAirdrop(
         employee.id_employe,
@@ -181,9 +222,11 @@ export function useUserHome() {
     isSuccess,
     isError,
     isModalOpen,
+    userstxHistory,
     setIsModalOpen,
     setStatusWidraw,
     setIsSuccess,
     setIsError,
+    setUserstxHistory,
   };
 }

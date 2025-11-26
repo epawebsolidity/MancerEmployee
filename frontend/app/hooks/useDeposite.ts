@@ -12,6 +12,7 @@ import { useAccount, useConnect, useWriteContract } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { createAllowcationAirdrop } from "../api/Salary";
 import { getWalletByUserId } from "../api/Wallet";
+
 export const useDeposite = (id: string | number) => {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [salary, setSalary] = useState<string>("");
