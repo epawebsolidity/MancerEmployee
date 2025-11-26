@@ -108,27 +108,18 @@ You can track all Web3 interactions here:
 ```sh
 git clone https://github.com/epawebsolidity/MancerEmployee.git
 cd MancerEmployee
-▶️ Running Backend
-sh
+Running
 Copy code
 cd backend
 npm install
 npm run dev
-Backend runs at:
-
-arduino
-Copy code
 http://localhost:5000
-▶️ Running Frontend
-sh
-Copy code
+```
+
+```sh
 cd frontend
 npm install
 npm run dev
-Frontend runs at:
-
-arduino
-Copy code
 http://localhost:3000
-🎯 Demo
-(Add screenshots or demo link here if available)
+
+```
