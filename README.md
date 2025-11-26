@@ -99,13 +99,13 @@ http://localhost:3000
 
 
 <p align="center">
-  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/login.png" alt="Claim Faucet" width="400" />
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/login.png" width="400" />
 </p>
 
 <p align="center">
-  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/deskop_home_admin.png" alt="Claim Faucet" width="400" />
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/deskop_home_admin.png"  width="400" />
 </p>
 
 <p align="center">
-  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/deskop_home_admin.png" alt="Claim Faucet" width="400" />
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/tampilan_admin_data_employe.png"  width="400" />
 </p>
