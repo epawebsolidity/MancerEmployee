@@ -1,29 +1,38 @@
 # 🚀 Mancer Employee – Fullstack Web3 Application
-- **Express.js**  
-- **MySQL**  
-- **Next.js**  
-- **Wagmi + Viem**  
-- **TailwindCSS**  
-- **Axios**  
+
+- **Express.js**
+- **MySQL**
+- **Next.js**
+- **Wagmi + Viem**
+- **TailwindCSS**
+- **Axios**
 - **Firebase Authentication**
+
 ---
+
 ## 📦 Tech Stack
+
 ### **Backend**
-- Express.js  
-- MySQL  
-- JWT Authentication  
+
+- Express.js
+- MySQL
+- JWT Authentication
+
 ### **Frontend**
-- Next.js  
-- Wagmi + Viem (Web3 Interaction)  
-- TailwindCSS  
-- Axios  
-- Firebase Auth  
+
+- Next.js
+- Wagmi + Viem (Web3 Interaction)
+- TailwindCSS
+- Axios
+- Firebase Auth
+
 ---
 
 ## 📂 Project Structure
+
 ```base
 MancerEmployee/
-│── backend/ 
+│── backend/
 │ ├── package.json
 │ └── .env
 │
@@ -34,9 +43,13 @@ MancerEmployee/
 │ ├── package.json
 │ └── .env
 ```
+
 ---
+
 ## 🔧 Environment Setup
+
 ### 🔹 1. Frontend — `frontend/.env`
+
 ```sh
 NEXT_PUBLIC_PHII_CONTRACT_ADDRESS=
 NEXT_PUBLIC_STREAM_CONTRACT_ADDRESS=
@@ -45,8 +58,11 @@ NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=
 ```
+
 ---
+
 ### 🔹 2. Backend — `backend/.env`
+
 ```sh
 DB_HOST=localhost
 DB_USER=root
@@ -57,15 +73,20 @@ JWT_SECRET=
 JWT_REFRESH_SECRET=
 PORT=5000
 ```
+
 ---
+
 ## 🔗 Smart Contract Addresses
 
 | Name                    | Address                                      |
 | ----------------------- | -------------------------------------------- |
 | **Token PHII (ERC-20)** | `0xc6800342F5C0895dd4419b99Bf758b2136F1CAfe` |
 | **Token EDU Mancer**    | `0x0fe44adB7854Cad8F11521e6D7C5eb5B7118EC0b` |
+
 ---
+
 ## 🧪 Blockscout Test Results
+
 ### Transaction Logs
 
 | Action               | Link                                                                                                                                                                                                                             |
@@ -75,18 +96,21 @@ PORT=5000
 | **WithdrawMax**      | [https://edu-chain-testnet.blockscout.com/tx/0xe0cfd4012ab3c04412a5d9e7c5dd31e02865124bda257b96cbedcb2a504436c5](https://edu-chain-testnet.blockscout.com/tx/0xe0cfd4012ab3c04412a5d9e7c5dd31e02865124bda257b96cbedcb2a504436c5) |
 | **RefundMax**        | [https://edu-chain-testnet.blockscout.com/tx/0xe225ec815ef5cb294ef504c8b1aa929181f2c636ecdff82cc12007e0b46082ec](https://edu-chain-testnet.blockscout.com/tx/0xe225ec815ef5cb294ef504c8b1aa929181f2c636ecdff82cc12007e0b46082ec) |
 
-
 ## 🚀 Installation & Run
+
 ### 1️⃣ Clone Repository
+
 ```sh
 git clone https://github.com/epawebsolidity/MancerEmployee.git
 ```
+
 ```sh
 cd backend
 npm install
 npm run dev
 http://localhost:5000
 ```
+
 ```sh
 cd frontend
 npm install
@@ -94,9 +118,10 @@ npm run dev
 http://localhost:3000
 
 ```
-## Demo
-### DESKTOP
 
+## Demo
+
+### DESKTOP
 
 <p align="center">
   <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/login.png" width="400" />
@@ -108,4 +133,35 @@ http://localhost:3000
 
 <p align="center">
   <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/tampilan_admin_data_employe.png"  width="400" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/tampilan_admin_createAndDeposit.png.png"  width="400" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/desposite_sukses.png"  width="400" />
+</p>
+
+### MOBILE
+
+<p align="center">
+  <img src="https://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_01.png"  width="400" />
+</p>
+
+<p align="center">
+  <img src="hhttps://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_02.png"  width="400" />
+</p>
+
+
+<p align="center">
+  <img src="hhttps://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_03.png"  width="400" />
+</p>
+
+<p align="center">
+  <img src="hhttps://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_04.png"  width="400" />
+</p>
+
+<p align="center">
+  <img src="hhttps://github.com/epawebsolidity/MancerEmployee/blob/main/demo/mobile_demo_05.png"  width="400" />
 </p>
