@@ -1,7 +1,4 @@
 # 🚀 Mancer Employee – Fullstack Web3 Application
-
-A fullstack Web3 payroll streaming system built using:
-
 - **Express.js**  
 - **MySQL**  
 - **Next.js**  
